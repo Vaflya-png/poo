@@ -8,12 +8,13 @@ display.set_caption('Ping-Pong')
 background = transform.scale(image.load('pole.jpg'), (width,height))
 speed = 10 
 
+speed_x = 3
+speed_y = 3
 
 font.init()
-font1 = font.SysFont('Arial',70)
-font2 = font.SysFont('Arial',36)
-win = font1.render('', True, (255,215,0))
-lose = font1.render('', True, (101,0,0))
+font1 = font.SysFont('Arial',50)
+lose1 = font1.render('PLAYER 1 LOSE!', True, (255,0,0))
+lose2 = font1.render('PLAYER 2 LOSE!', True, (255,0,0))
 
 class GameSprite(sprite.Sprite):
     def __init__(self, player_image, player_x, player_y, size_x, size_y, player_speed):
@@ -41,11 +42,13 @@ class Player(GameSprite):
         if keys_pressed[K_DOWN] and self.rect.y < height - 160:
             self.rect.y += self.speed        
 
-sprite1= Player('lopata.png',5, 300, 120, 160, 7)   
-sprite2= Player('palka.png',575, 300, 120, 160, 7)           
+sprite1= Player('lopata.png',0, 170, 20, 160, 7)   
+sprite2= Player('palka.png',605, 170, 20, 160, 7)   
+sprite3= GameSprite('egg.png', 315, 220, 60, 60, 7 )        
 #! sssssssssss
 
 
+    
 
 game = True
 finish = False
@@ -62,12 +65,29 @@ while game:
     if finish != True:
         window.blit(background, (0,0))
             
-        window.blit(win, (200,200))
+        
         sprite1.update_l()
         sprite2.update_r()
+        sprite3.update()
+
+        sprite3.reset()
         sprite2.reset()
         sprite1.reset()
 
+        sprite3.rect.x += speed_x
+        sprite3.rect.y += speed_y
 
+        if sprite3.rect.y > 500-60 or sprite3.rect.y < 0:
+            speed_y *= -1.1
+        if sprite.collide_rect(sprite3, sprite1) or sprite.collide_rect(sprite3, sprite2):
+            speed_x *= -1.1
+
+        if sprite3.rect.x <0:
+            window.blit(lose1, (200, 200))
+            finish = True
+
+        if sprite3.rect.x >640:
+            window.blit(lose2, (200, 200))
+            finish = True
         display.update()
     clock.tick(FPS)
